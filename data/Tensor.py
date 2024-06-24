@@ -29,7 +29,7 @@ class Tensor(object):
 
     def all_children_grads_accounted_for(self):
         for id, cnt in self.children.items():
-            if cnt > 0:
+            if cnt != 0:
                 return False
 
         return True
@@ -37,10 +37,12 @@ class Tensor(object):
     def backward(self, grad=None, grad_origin=None):
         if self.autograd:
             if grad_origin is not None:
+                grad_origin: Tensor
                 if self.children[grad_origin.tensor_id] == 0:
                     raise Exception("Cannot backward grad of tensor with no children")
                 else:
                     self.children[grad_origin.tensor_id] -= 1
+
             if self.grad is None:
                 self.grad = grad
             else:
