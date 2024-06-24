@@ -21,6 +21,7 @@ class Tensor(object):
         self.tensor_id = tensor_id
         if creators is not None:
             for c in creators:
+                c: Tensor
                 if c.tensor_id not in c.children:
                     c.children[self.tensor_id] = 1
                 else:
@@ -33,12 +34,11 @@ class Tensor(object):
 
         return True
 
-
     def backward(self, grad=None, grad_origin=None):
         if self.autograd:
             if grad_origin is not None:
                 if self.children[grad_origin.tensor_id] == 0:
-                    raise Exception ("Cannot backward grad of tensor with no children")
+                    raise Exception("Cannot backward grad of tensor with no children")
                 else:
                     self.children[grad_origin.tensor_id] -= 1
             if self.grad is None:
